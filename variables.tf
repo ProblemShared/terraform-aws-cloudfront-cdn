@@ -65,6 +65,18 @@ variable "origin_path" {
   default     = ""
 }
 
+variable "s3_origin" {
+  type = bool
+  description = "Configure S3 instead of custom origin. The `origin_access_identity` needs to be set."
+  default = false
+}
+
+variable "origin_access_identity" {
+  type = string
+  description = "The CloudFront origin access identity to associate with the S3 origin. The `s3_origin` needs to be set to true."
+  default = null
+}
+
 variable "origin_http_port" {
   type        = number
   description = "The HTTP port the custom origin listens on"

@@ -64,13 +64,23 @@ resource "aws_cloudfront_distribution" "default" {
     origin_id   = module.this.id
     origin_path = var.origin_path
 
-    custom_origin_config {
-      http_port                = var.origin_http_port
-      https_port               = var.origin_https_port
-      origin_protocol_policy   = var.origin_protocol_policy
-      origin_ssl_protocols     = var.origin_ssl_protocols
-      origin_keepalive_timeout = var.origin_keepalive_timeout
-      origin_read_timeout      = var.origin_read_timeout
+    dynamic "s3_origin_config" {
+      for_each = var.s3_origin ? ["true"] : []
+      content {
+        origin_access_identity = var.origin_access_identity
+      }
+    }
+
+    dynamic "custom_origin_config" {
+      for_each = var.s3_origin ? [] : ["true"]
+      content {
+        http_port                = var.origin_http_port
+        https_port               = var.origin_https_port
+        origin_protocol_policy   = var.origin_protocol_policy
+        origin_ssl_protocols     = var.origin_ssl_protocols
+        origin_keepalive_timeout = var.origin_keepalive_timeout
+        origin_read_timeout      = var.origin_read_timeout
+      }
     }
 
     dynamic "origin_shield" {
